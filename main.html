@@ -1,16 +1,310 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
-	<link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simple Calculator</title>
+  <style>
+    :root{
+      --bg: #0f1724;
+      --panel: #0b1220;
+      --accent: #7c5cff;
+      --muted: #98a1b3;
+      --btn: #111827;
+      --btn-hover: #1f2937;
+      --glass: rgba(255,255,255,0.04);
+    }
+    *{box-sizing:border-box;font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+    body{
+      background: linear-gradient(180deg,#071026 0%, #0f1724 100%);
+      color:#e6eef8;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .wrapper{
+      width:360px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:16px;
+      padding:18px;
+      box-shadow: 0 8px 30px rgba(2,6,23,0.8), inset 0 1px 0 rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .header{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      margin-bottom:10px;
+    }
+
+    .thumb{
+      width:56px;
+      height:40px;
+      border-radius:8px;
+      overflow:hidden;
+      flex:0 0 56px;
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    .thumb img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .title{
+      display:flex;
+      flex-direction:column;
+    }
+    .title h1{
+      font-size:16px;
+      margin:0;
+      letter-spacing:0.2px;
+    }
+    .title p{
+      margin:0;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .screen-wrap{
+      margin-top:8px;
+      margin-bottom:12px;
+    }
+
+    input#input{
+      width:100%;
+      height:56px;
+      border-radius:10px;
+      background:var(--glass);
+      border: 1px solid rgba(255,255,255,0.03);
+      padding:10px 14px;
+      color: #eaf2ff;
+      font-size:20px;
+      outline:none;
+      box-shadow: inset 0 -4px 12px rgba(0,0,0,0.4);
+    }
+    input#input::placeholder{ color:var(--muted); }
+
+    .keys{
+      display:grid;
+      grid-template-columns: repeat(4,1fr);
+      gap:10px;
+      margin-top:14px;
+    }
+
+    button.key{
+      height:56px;
+      border-radius:10px;
+      border: none;
+      background: linear-gradient(180deg,var(--btn), #0b1220);
+      color:#dbe9ff;
+      font-size:18px;
+      cursor:pointer;
+      box-shadow: 0 6px 12px rgba(2,6,23,0.6);
+      transition: transform .06s ease, background .12s;
+    }
+    button.key:active{ transform: translateY(1px) scale(.998); }
+    button.key:hover{ background: var(--btn-hover); }
+
+    /* operation keys */
+    button.op{
+      background: linear-gradient(180deg,var(--accent), #5b44d9);
+      box-shadow: 0 8px 18px rgba(124,92,255,0.18);
+      color:white;
+      font-weight:600;
+    }
+    button.op:hover{ filter:brightness(.98); }
+
+    /* special keys */
+    button#ans{
+      grid-column: span 2;
+      background: linear-gradient(180deg,#10b981, #059669);
+      box-shadow: 0 8px 18px rgba(16,185,129,0.12);
+    }
+    button#clr{
+      background: linear-gradient(180deg, #ef4444, #dc2626);
+      box-shadow: 0 8px 18px rgba(239,68,68,0.12);
+    }
+
+    .small{
+      font-size:14px;
+      color:var(--muted);
+      margin-top:10px;
+      text-align:center;
+    }
+
+    /* responsive */
+    @media (max-width:420px){
+      .wrapper{ width: 92%; }
+    }
+  </style>
 </head>
-
 <body>
-	<!-- the entire body must be written by student -->
-    <script type="text/javascript" src="./script.js">
-</script>
+  <div class="wrapper" role="application" aria-label="Calculator">
+    <div class="header">
+      <div class="thumb" aria-hidden="true">
+        <!-- local uploaded design image -->
+        <img src="/mnt/data/9101d414-0e14-4721-bc4f-e74707cde82e.png" alt="Calculator design reference image showing a clean digital calculator layout" />
+      </div>
+      <div class="title">
+        <h1>Simple Calculator</h1>
+        <p>+ - × ÷ • — clean & accessible</p>
+      </div>
+    </div>
 
+    <div class="screen-wrap">
+      <!-- required input element where value updates -->
+      <input id="input" type="text" placeholder="0" aria-label="Calculator display" readonly>
+    </div>
+
+    <div class="keys" role="group" aria-label="Calculator buttons">
+      <!-- Row 1 -->
+      <button id="block7" class="key">7</button>
+      <button id="block8" class="key">8</button>
+      <button id="block9" class="key">9</button>
+      <button id="divide" class="key op">÷</button>
+
+      <!-- Row 2 -->
+      <button id="block4" class="key">4</button>
+      <button id="block5" class="key">5</button>
+      <button id="block6" class="key">6</button>
+      <button id="multiply" class="key op">×</button>
+
+      <!-- Row 3 -->
+      <button id="block1" class="key">1</button>
+      <button id="block2" class="key">2</button>
+      <button id="block3" class="key">3</button>
+      <button id="minus" class="key op">−</button>
+
+      <!-- Row 4 -->
+      <button id="block0" class="key">0</button>
+      <button id="dot" class="key">.</button>
+      <button id="ans" class="key">=</button>
+      <button id="plus" class="key op">+</button>
+
+      <!-- Row 5 (clear) -->
+      <button id="clr" class="key" style="grid-column: span 4; height:48px;">Clear</button>
+    </div>
+
+    <div class="small">Tip: You can build an expression and press "=" to evaluate.</div>
+  </div>
+
+  <script>
+    // Grab elements
+    const display = document.getElementById('input');
+
+    // map of button ids to their values
+    const map = {
+      block0: '0', block1: '1', block2: '2', block3: '3',
+      block4: '4', block5: '5', block6: '6', block7: '7',
+      block8: '8', block9: '9',
+      plus: '+', minus: '-', multiply: '*', divide: '/',
+      dot: '.'
+    };
+
+    // Attach click listeners for number and op buttons
+    Object.keys(map).forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('click', () => appendToDisplay(map[id]));
+    });
+
+    // Clear button
+    document.getElementById('clr').addEventListener('click', () => {
+      display.value = '';
+      display.placeholder = '0';
+    });
+
+    // Equals button
+    document.getElementById('ans').addEventListener('click', evaluateExpression);
+
+    // Append logic with small safety rules to avoid invalid sequences
+    function appendToDisplay(ch){
+      // If display empty and ch is an operator (except minus for negative numbers), don't allow
+      const cur = display.value;
+      const last = cur.slice(-1);
+
+      // Prevent two consecutive operators (allow minus for negative when empty or after operator)
+      const operators = ['+','-','*','/'];
+      if (operators.includes(ch)) {
+        if (cur === '' && ch !== '-') {
+          // do not allow starting with + * /
+          return;
+        }
+        if (operators.includes(last)) {
+          // replace last operator with new one (so 5 + - becomes 5 -)
+          display.value = cur.slice(0, -1) + ch;
+          return;
+        }
+      }
+
+      // Prevent multiple dots in a single number segment
+      if (ch === '.') {
+        // find last operator index
+        let lastOpIndex = -1;
+        for (let i = cur.length -1; i >=0; i--){
+          if (operators.includes(cur[i])) { lastOpIndex = i; break; }
+        }
+        const segment = cur.slice(lastOpIndex + 1);
+        if (segment.includes('.')) return; // already has a dot
+        if (segment === '') {
+          // if starting a number with dot, prefix 0
+          display.value = cur + '0';
+        }
+      }
+
+      display.value = display.value + ch;
+    }
+
+    function evaluateExpression(){
+      const expr = display.value.trim();
+      if (expr === '') {
+        display.placeholder = '0';
+        return;
+      }
+
+      try {
+        // Evaluate safely: only allow digits, operators, parentheses and dot
+        if (!/^[0-9+\-*/().\s]+$/.test(expr)) {
+          display.value = 'Error';
+          return;
+        }
+
+        // Use Function constructor for a tiny bit safer eval (still trust-local)
+        const fn = new Function('return (' + expr + ')');
+        const result = fn();
+
+        // Convert result to string — JS will produce Infinity or NaN naturally
+        display.value = String(result);
+      } catch (e) {
+        display.value = 'Error';
+      }
+    }
+
+    // Keyboard support: optional
+    window.addEventListener('keydown', (e) => {
+      const allowed = '0123456789+-*/().';
+      if (allowed.includes(e.key)) {
+        // Prevent default to avoid typing in focus (readonly)
+        e.preventDefault();
+        appendToDisplay(e.key);
+      } else if (e.key === 'Enter' || e.key === '=') {
+        e.preventDefault();
+        evaluateExpression();
+      } else if (e.key === 'Backspace') {
+        e.preventDefault();
+        display.value = display.value.slice(0, -1);
+      } else if (e.key.toLowerCase() === 'c') {
+        // quick clear with C
+        e.preventDefault();
+        display.value = '';
+      }
+    });
+  </script>
 </body>
-
 </html>
